@@ -87,12 +87,12 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	}
 
 	public function getBanggoodStockLevelBySku($sku, $id) {
-		$jsonUrl = "http://www.banggood.com/index.php?com=product&t=stockMessage&sku=".$slu."&warehouse=CN&products_id=".$id."&noneShipment=undefined&getCurWarehouse=1";
+		$jsonUrl = "http://www.banggood.com/index.php?com=product&t=stockMessage&sku=".$sku."&warehouse=CN&products_id=".$id."&noneShipment=undefined&getCurWarehouse=1";
     Mage::log($jsonUrl);
 		$jsonfile = file_get_contents($jsonUrl);
 		$decoded = json_decode($jsonfile);
-		Mage::log($sku.": ".print_R($decoded,TRUE));
-
+		//Mage::log($sku.": ".print_R($decoded,TRUE));
+		Mage::log($sku.": ".$decoded["message"]);
 
 	}
 }
