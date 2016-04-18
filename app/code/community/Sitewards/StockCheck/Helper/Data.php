@@ -54,9 +54,8 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @return	int real time stock level
 	 */
 	public function getCustomQuantity($mProductSku) {
-		Mage::throwException(
-			$this->__('StockCheck extension not correctly setup. Please complete the function getCustomQuantity in the helper %s', get_class())
-		);
+		getAggregatedStockLevel($skuList);
+		return 1;
 	}
 
 	/**
@@ -65,9 +64,8 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @return	int constant related to real time stock level
 	 */
 	public function getStorageType($mProductSku) {
-		Mage::throwException(
-			$this->__('StockCheck extension not correctly setup. Please complete the function getStorageType in the helper %s', get_class())
-		);
+		getAggregatedStockLevel($skuList);
+		return 1;
 	}
 
 	/**
@@ -76,8 +74,24 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @return	int current amount of stock taking into account the items on order
 	 */
 	public function getProductsStockOrder($mProductSku) {
-		Mage::throwException(
-			$this->__('StockCheck extension not correctly setup. Please complete the function getProductsStockOrder in the helper %s', get_class())
-		);
+		getAggregatedStockLevel($skuList);
+		return 1;
+	}
+
+	public function getAggregatedStockLevel($skuList) {
+		 $skus = explode(",", $skuList);
+		 foreach($skus as $pair) {
+			 $ids = explode("|", $pair);
+			 getBanggoodStockLevelBySku($ids[0], $ids[1]);
+		 }
+	}
+
+	public function getBanggoodStockLevelBySku($sku, $id) {
+		$jsonUrl = "http://www.banggood.com/index.php?com=product&t=stockMessage&sku=".$slu."&warehouse=CN&products_id=".$id."&noneShipment=undefined&getCurWarehouse=1";
+		$jsonfile = file_get_contents($jsonUrl);
+		$decoded = json_decode($jsonfile);
+		Mage::log($sku.": ".$decoded["message"]);
+
+
 	}
 }

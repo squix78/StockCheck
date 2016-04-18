@@ -29,4 +29,14 @@ interface Sitewards_StockCheck_Helper_Interface
 	 * @return	int current amount of stock taking into account the items on order
 	 */
 	public function getProductsStockOrder($mxdProductSku);
+
+
+  public function getAggregatedStockLevel($skuList);
+  /**
+	*
+	* @param string $sku the sku of the banggood product
+	* @param string $id  the id of the banggood product
+	* @return int estimated stock level of banggood api
+	**/
+	public function getBanggoodStockLevelBySku($sku, $id);
 }
