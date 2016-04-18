@@ -90,7 +90,7 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 		$jsonUrl = "http://www.banggood.com/index.php?com=product&t=stockMessage&sku=".$slu."&warehouse=CN&products_id=".$id."&noneShipment=undefined&getCurWarehouse=1";
 		$jsonfile = file_get_contents($jsonUrl);
 		$decoded = json_decode($jsonfile);
-		Mage::log($sku.": ".$decoded["message"]);
+		Mage::log($sku);
 
 
 	}
