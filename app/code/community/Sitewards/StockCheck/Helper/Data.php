@@ -54,7 +54,7 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @return	int real time stock level
 	 */
 	public function getCustomQuantity($mProductSku) {
-		$this->getAggregatedStockLevel($skuList);
+		$this->getAggregatedStockLevel($mProductSku);
 		return 1;
 	}
 
@@ -64,7 +64,7 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @return	int constant related to real time stock level
 	 */
 	public function getStorageType($mProductSku) {
-		$this->getAggregatedStockLevel($skuList);
+		$this->getAggregatedStockLevel($mProductSku);
 		return 1;
 	}
 
@@ -74,7 +74,7 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @return	int current amount of stock taking into account the items on order
 	 */
 	public function getProductsStockOrder($mProductSku) {
-		$this->getAggregatedStockLevel($skuList);
+		$this->getAggregatedStockLevel($mProductSku);
 		return 1;
 	}
 
