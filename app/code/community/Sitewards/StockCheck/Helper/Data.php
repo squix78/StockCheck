@@ -54,8 +54,21 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @return	int real time stock level
 	 */
 	public function getCustomQuantity($mProductSku) {
-		$this->getAggregatedStockLevel($mProductSku);
-		return 1;
+		$storageType = $this->getStorageType($mProductSku);
+		switch($storageType) {
+			case $this->iStockOffId:
+				return 0;
+				break;
+			case $this->iStockRedId:
+				return 0;
+				break;
+			case $this->iStockYellowId:
+				return 1;
+				break;
+			case $this->iStockGreenId:
+				return 100;
+				break;
+		}
 	}
 
 	/**
@@ -64,7 +77,26 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @return	int constant related to real time stock level
 	 */
 	public function getStorageType($mProductSku) {
-		$this->getAggregatedStockLevel($mProductSku);
+		$messages = $this->getAggregatedStockLevel($mProductSku);
+		$nbInStock = 0;
+		$nbRestock = 0;
+		$nbSoldOut = 0;
+		foreach($messages as $key => $value) {
+			if (strpos($value, 'Sold out') !== false) {
+				$nbSoldOut++;
+			} else if (strpos($value, 'Sold out') !== false) {
+				$nbRestock++;
+		  } else if (strpos($value, 'In stock') !== false) {
+				$nbInStock++;
+			}
+		}
+		if ($nbSoldOut > 0) {
+			return $this->iStockOffId;
+		} else if ($nbRestock > 0) {
+			return $this->iStockYellowId;
+		} else {
+			$this->iStockGreenId;
+		}
 		return 1;
 	}
 
@@ -74,16 +106,18 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @return	int current amount of stock taking into account the items on order
 	 */
 	public function getProductsStockOrder($mProductSku) {
-		$this->getAggregatedStockLevel($mProductSku);
-		return 1;
+		return $this->getCustomQuantity($mProductSku);
 	}
 
 	public function getAggregatedStockLevel($skuList) {
 		 $skus = explode(",", $skuList);
+		 $messages = array();
 		 foreach($skus as $pair) {
 			 $ids = explode("|", $pair);
-			 $this->getBanggoodStockLevelBySku($ids[0], $ids[1]);
+			 $message = $this->getBanggoodStockLevelBySku($ids[0], $ids[1]);
+			 $messages[$message] = $message;
 		 }
+		 return $messages;
 	}
 
 	public function getBanggoodStockLevelBySku($sku, $id) {
@@ -99,6 +133,8 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 			Mage::log($sku.": ".$decoded->message);
 			$value = $decoded->message;
 			$cache->save($value, $cacheKey, array("banggoodStock"), 60 * 60 * 12);
+		} else {
+			Mage::log("From cache: ".$sku.": ".$value);
 		}
 		return $value;
 
