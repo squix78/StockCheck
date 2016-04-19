@@ -87,12 +87,20 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 	}
 
 	public function getBanggoodStockLevelBySku($sku, $id) {
-		$jsonUrl = "http://www.banggood.com/index.php?com=product&t=stockMessage&sku=".$sku."&warehouse=CN&products_id=".$id."&noneShipment=undefined&getCurWarehouse=1";
-    Mage::log($jsonUrl);
-		$jsonfile = file_get_contents($jsonUrl);
-		$decoded = json_decode($jsonfile);
-		//Mage::log($sku.": ".print_R($decoded,TRUE));
-		Mage::log($sku.": ".$decoded->message);
+		$cacheKey = "Banggood_".$sku;
+		$cache = Mage::app()->getCache();
+		$value = $cache->load($cacheKey);
+		if (!$value) {
+			$jsonUrl = "http://www.banggood.com/index.php?com=product&t=stockMessage&sku=".$sku."&warehouse=CN&products_id=".$id."&noneShipment=undefined&getCurWarehouse=1";
+	    Mage::log($jsonUrl);
+			$jsonfile = file_get_contents($jsonUrl);
+			$decoded = json_decode($jsonfile);
+			//Mage::log($sku.": ".print_R($decoded,TRUE));
+			Mage::log($sku.": ".$decoded->message);
+			$value = $decoded->message;
+			$cache->save($value, $cacheKey, array("banggoodStock"), 60 * 60 * 12);
+		}
+		return $value;
 
 	}
 }
