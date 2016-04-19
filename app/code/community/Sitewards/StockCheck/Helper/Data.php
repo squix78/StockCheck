@@ -92,7 +92,7 @@ class Sitewards_StockCheck_Helper_Data extends Mage_Core_Helper_Abstract
 		$jsonfile = file_get_contents($jsonUrl);
 		$decoded = json_decode($jsonfile);
 		//Mage::log($sku.": ".print_R($decoded,TRUE));
-		Mage::log($sku.": ".print_r($decoded, true));
+		Mage::log($sku.": ".$decoded->message);
 
 	}
 }
